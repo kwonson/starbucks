@@ -3,6 +3,7 @@
 
    var _sb = _sb || {};
 
+
    $(function () {
     _init();
     _initEvent();
@@ -24,6 +25,7 @@
        megaMenuHandler();
        searchHandler();
        firstAnimations();
+       sliderHandler();
    }
 
    function toggleTopCard() {
@@ -141,6 +143,25 @@
         });
     }
 
+    function sliderHandler() {
+       $('.notice-line .slider ul').bxSlider({
+           mode: 'vertical',
+           pager: false,
+           controls: false,
+           auto: true,
+           pause: 5000
+       });
+
+       $('.promotion .slider ul').bxSlider({
+           auto: true,
+           minSlides: 1,
+           maxSlides: 3,
+           moveSlides: 1,
+           slideWidth: 819,
+           slideMargin: 10
+
+       });
+    }
 
 
 
