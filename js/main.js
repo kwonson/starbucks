@@ -3,6 +3,7 @@
 
    var _sb = _sb || {};
 
+
    $(function () {
     _init();
     _initEvent();
@@ -17,6 +18,8 @@
         _sb.$searchImg = _sb.$search.find('img');
         _sb.searchValue = '';
         _sb.ENTER_KEY = 13;
+        _sb.$promotion = $('.promotion .inner');
+        _sb.$togglePromotionBtn = $('.notice-line .toggle-promotion');
    }
 
    function _initEvent() {
@@ -24,6 +27,9 @@
        megaMenuHandler();
        searchHandler();
        firstAnimations();
+       sliderHandler();
+       togglePromotionHandler();
+       playTogglePromotionBtn();
    }
 
    function toggleTopCard() {
@@ -139,6 +145,101 @@
         $('.visual .fade-in').each(function (index) {
             TweenMax.to(this, 1, { opacity: 1, delay: (index + 1) * .7 });
         });
+    }
+
+    function sliderHandler() {
+       $('.notice-line .slider ul').bxSlider({
+           mode: 'vertical',
+           pager: false,
+           controls: false,
+           auto: true,
+           pause: 5000
+       });
+
+       _sb.promotionSlider = $('.promotion .slider ul').bxSlider({
+           pager: true,
+           controls: false,
+           autoControls: true,
+           pagerSelector: '.promotion .pager',
+           autoControlsSelector: '.promotion .auto-controls',
+           autoControlsCombine: true,
+           startText: '',
+           stopText: '',
+           auto: true,
+           pause: 5000,
+           minSlides: 1,
+           maxSlides: 3,
+           moveSlides: 1,
+           slideWidth: 819,
+           slideMargin: 10,
+           onSliderLoad: function () {
+               $('.promotion .slider li').removeClass('active');
+               $('.promotion .slider li.first').addClass('active');
+           },
+           onSlideAfter: function ($slideElement, oldIndex, newIndex) {
+               $('.promotion .slider li').removeClass('active');
+               $slideElement.addClass('active');
+           }
+       });
+
+       $('.promotion .prev').on('click', function () {
+           _sb.promotionSlider.goToPrevSlide();
+           _sb.promotionSlider.stopAuto();
+       });
+
+        $('.promotion .next').on('click', function () {
+            _sb.promotionSlider.goToNextSlide();
+            _sb.promotionSlider.stopAuto();
+        });
+    }
+
+    function togglePromotionHandler() {
+        _sb.$togglePromotionBtn.on('click', function () {
+           if (_sb.$promotion.data('opened') === 'opened') {
+               closePromotion();
+           } else {
+               openPromotion();
+            }
+        });
+    }
+
+    function openPromotion() {
+       _sb.$promotion
+           .stop()
+           .slideDown(400)
+           .data({
+               opened: 'opened'
+           });
+        _sb.promotionSlider.reloadSlider();
+        pauseTogglePromotionBtn();
+    }
+
+    function closePromotion() {
+       _sb.$promotion
+           .stop()
+           .slideUp(400, function () {
+               _sb.promotionSlider.destroySlider();
+           })
+           .data({
+               opened: ''
+           });
+        playTogglePromotionBtn();
+    }
+
+    function playTogglePromotionBtn() {
+       TweenMax.set(_sb.$togglePromotionBtn, { scale: .9 });
+       TweenMax.to(_sb.$togglePromotionBtn, .5, { rotation: 0 });
+       _sb.toggleZoom = TweenMax.to(_sb.$togglePromotionBtn, 1, {
+           scale: 1.1,
+           repeat: -1,
+           yoyo: true
+       });
+    }
+
+    function pauseTogglePromotionBtn() {
+        TweenMax.set(_sb.$togglePromotionBtn, { scale: 1 });
+        TweenMax.to(_sb.$togglePromotionBtn, .5, { rotation: -180 });
+        _sb.toggleZoom.pause();
     }
 
 
