@@ -33,6 +33,8 @@
        playTogglePromotionBtn();
        windowScroll();
        checkSectionOffsetTop();
+       setReturnToPosition();
+       toTopBtnHandler ();
    }
 
    function toggleTopCard() {
@@ -235,7 +237,7 @@
 
     function playTogglePromotionBtn() {
        TweenMax.set(_sb.$togglePromotionBtn, { scale: .9 });
-       TweenMax.to(_sb.$togglePromotionBtn, .5, { rotation: 0 });
+        TweenMax.to(_sb.$togglePromotionBtn, .5, { rotation: 0 });
        _sb.toggleZoom = TweenMax.to(_sb.$togglePromotionBtn, 1, {
            scale: 1.1,
            repeat: -1,
@@ -281,7 +283,6 @@
                 } else {
                     _sb.currentSecIndex = i;
 
-
                     changeSectionHandler();
                 }
             }
@@ -291,6 +292,13 @@
     function changeSectionHandler() {
             console.log('현재섹션은 ' + _sb.currentSecIndex);
 
+        returnToPosition('.season-product', 1, 4);
+        returnToPosition('.reserve', 1, 5);
+        returnToPosition('.favorite', 1, 6);
+        returnToPosition('.find-store', 1, 8);
+
+        resetReturnToPosition ();
+        toggleToTop ();
     }
 
     function checkSectionOffsetTop() {
@@ -301,6 +309,61 @@
             );
         });
         console.log(_sb.secOffsetTop);
+    }
+
+    function setReturnToPosition() {
+       $('.return-to-position').each(function () {
+           var x = 100;
+
+          if ($(this).hasClass('.to-right')) {
+              x *= -1;
+          } else if ($(this).hasClass('.to-left')) {
+              x = Math.abs(x);
+          }
+           TweenMax.set(this, { x: x, opacity: 0 });
+       });
+    }
+    function returnToPosition(sectionSelector, duration, whichSectionIndex) {
+       if ( _sb.currentSecIndex === whichSectionIndex ) {
+           $( sectionSelector + ' .return-to-position').each(function (index) {
+               TweenMax.to(this, duration , {
+                   delay: index * .3,
+                   x: 0,
+                   opacity: 1
+               });
+           })
+        }
+    }
+
+    function resetReturnToPosition () {
+       if (_sb.currentSecIndex <= 1) {
+           setReturnToPosition();
+       }
+    }
+
+    function toTopBtnHandler () {
+        $('#to-top').on('click', function () {
+            toTop();
+        });
+    }
+
+    function toTop () {
+       TweenMax.to(window, .7, {scrollTo: 0});
+    }
+
+    function toggleToTop () {
+       if (_sb.currentSecIndex > 3) {
+           showToTop();
+       } else {
+           hideToTop();
+       }
+    }
+
+    function showToTop() {
+       $('#to-top').stop(false, true).fadeIn(400);
+    }
+    function hideToTop() {
+        $('#to-top').stop(false, true).fadeOut(400);
     }
 
 }(jQuery));
